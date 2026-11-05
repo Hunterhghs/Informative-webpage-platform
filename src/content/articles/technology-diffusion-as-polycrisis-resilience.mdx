@@ -1,0 +1,186 @@
+---
+title: "Technology diffusion as polycrisis resilience"
+dek: "In a world of compound shocks, how fast useful technologies spread matters more than where they were invented. Diffusion is one of the most underrated resilience strategies available."
+kicker: "Polycrisis resilience"
+topic: technology-ai
+tags: [technology diffusion, polycrisis, resilience, adaptation, energy transition, mobile money, early warning]
+date: 2026-11-05
+featured: true
+takeaways:
+  - "Invention is rarely the bottleneck. Technologies have historically taken decades to reach most countries, and they are used <strong>far less intensively</strong> in poorer economies even after they arrive."
+  - "Widely adopted technologies build resilience in five ways: they offer <strong>substitutes</strong> when systems fail, <strong>decentralise</strong> critical services, <strong>speed up responses</strong>, get <strong>cheaper</strong> with scale and give households <strong>buffers</strong> against shocks."
+  - "Diffusion can also create new fragilities: concentrated supply chains, digital monocultures and widening gaps between adopters and everyone else."
+  - "Resilience policy should track how deeply proven technologies are used, not just which new ones are invented, and pair speed with <strong>diversity and fallbacks</strong>."
+sources:
+  - title: "An Exploration of Technology Diffusion"
+    publisher: "Diego Comin and Bart Hobijn, American Economic Review"
+    year: 2010
+  - title: "If Technology Has Arrived Everywhere, Why Has Income Diverged?"
+    publisher: "Diego Comin and Martí Mestieri, American Economic Journal: Macroeconomics"
+    year: 2018
+  - title: "Diffusion of Innovations"
+    publisher: "Everett M. Rogers, Free Press"
+    year: 1962
+  - title: "Hybrid Corn: An Exploration in the Economics of Technological Change"
+    publisher: "Zvi Griliches, Econometrica"
+    year: 1957
+  - title: "Risk Sharing and Transactions Costs: Evidence from Kenya's Mobile Money Revolution"
+    publisher: "William Jack and Tavneet Suri, American Economic Review"
+    year: 2014
+  - title: "The long-run poverty and gender impacts of mobile money"
+    publisher: "Tavneet Suri and William Jack, Science"
+    year: 2016
+  - title: "Adapt Now: A Global Call for Leadership on Climate Resilience"
+    publisher: "Global Commission on Adaptation"
+    year: 2019
+  - title: "Solar PV Global Supply Chains"
+    publisher: "International Energy Agency"
+    year: 2022
+  - title: "Empirically grounded technology forecasts and the energy transition"
+    publisher: "Rupert Way, Matthew Ives, Penny Mealy and J. Doyne Farmer, Joule"
+    year: 2022
+  - title: "Global polycrisis: the causal mechanisms of crisis entanglement"
+    publisher: "Michael Lawrence and others, Global Sustainability"
+    year: 2024
+  - title: "Early Warnings for All: Executive Action Plan 2023–2027"
+    publisher: "World Meteorological Organization"
+    year: 2022
+---
+
+When Russia's invasion of Ukraine sent energy prices soaring in 2022, the shock did not land evenly. Households and firms that had already installed rooftop solar, heat pumps or better insulation were partly shielded; those still tied entirely to imported gas were not. When grid power in Pakistan became unaffordable for many families over the following two years, millions of them did not wait for the utility to fix things. They bought cheap imported solar panels and wired them up themselves. In Ukraine, hospitals, schools and homes turned to small-scale solar and batteries to keep the lights on through attacks on the grid.
+
+None of these technologies was new. What made the difference was whether they had already spread, and how easily they could spread further when a crisis hit. That is the central argument of this explainer: in an age of compound, overlapping shocks, the speed and depth of **technology diffusion** is a form of resilience in its own right, and one that is often neglected in favour of a fixation on invention.
+
+<KeyStats
+  items={[
+    { value: '45 yrs', label: 'Average lag between a technology’s invention and its adoption across countries', note: 'Comin and Hobijn, 2010' },
+    { value: '30%', label: 'Reduction in damage from just 24 hours’ warning of a storm or heatwave', note: 'Global Commission on Adaptation' },
+    { value: '>80%', label: 'China’s share of every main stage of solar-panel manufacturing', note: 'IEA, 2022' },
+  ]}
+/>
+
+## Invention is not the bottleneck
+
+Discussions of technology and crisis tend to focus on the frontier: the next breakthrough battery, a new vaccine platform, a more accurate climate model. Breakthroughs matter. But most of the resilience the world could have today depends on technologies that already exist and are already cheap, yet are still unevenly used.
+
+The economists Diego Comin and Bart Hobijn tracked the spread of more than a hundred technologies, from steam ships and telegraphs to personal computers and the internet, across more than 160 countries. They found that, on average, countries adopted a new technology about 45 years after its invention. Those lags have shortened considerably: mobile phones and the internet reached most of the world far faster than railways or electricity did. That is the good news.
+
+The bad news came in a follow-up study by Comin and Martí Mestieri. Although technologies now *arrive* in poorer countries more quickly, they are used far less *intensively* once there. A country may have mobile broadband, an electricity grid and modern seed varieties, while only a fraction of its people, firms and farms use them in ways that change outcomes. Differences in the intensity of use, they argue, explain a large part of the gap in incomes between rich and poor countries.
+
+For resilience, intensity is what counts. An early-warning system that reaches the capital but not the coastal villages, or a mobile-money network that only urban salaried workers use, offers little protection to the people most exposed to the next shock.
+
+<LineChart
+  label="Stylised"
+  title="Same technology, different speeds"
+  subtitle="Share of potential users who have adopted a technology, %, by years since it became available"
+  unit="%"
+  x={[0, 5, 10, 15, 20, 25, 30, 35, 40]}
+  yMax={100}
+  series={[
+    { name: 'Fast diffusion', values: [1, 10, 50, 90, 99, 100, 100, 100, 100] },
+    { name: 'Slow diffusion', values: [1, 2, 6, 14, 31, 55, 77, 90, 96] },
+  ]}
+  note="Stylised logistic curves for illustration, following the S-shaped pattern documented by Griliches (1957) and Rogers (1962)."
+/>
+
+Diffusion almost always follows an S-shaped curve, a pattern first documented in detail by Zvi Griliches in his study of hybrid corn in America and popularised by the sociologist Everett Rogers. Adoption starts slowly among a few pioneers, accelerates as costs fall and neighbours copy one another, then levels off. The shape is remarkably consistent; the *timing* is not. Two places can face the same technology and end up decades apart in when they reach the steep part of the curve. In a polycrisis, those decades are the difference between facing a shock with the tools to absorb it and facing it without.
+
+<Callout type="definition" title="Technology diffusion">
+The process by which a technology spreads from its first users to the wider population of people, firms and governments that could benefit from it. Economists measure both **extent** (who has adopted it at all) and **intensity** (how much it is used once adopted).
+</Callout>
+
+## Five ways diffusion builds resilience
+
+A [polycrisis](/articles/what-is-a-polycrisis/) is a set of crises that interact, so that the combined harm exceeds the sum of the parts. Shocks propagate through shared weak points: a single grid, a single supply route, a single source of income. Widely diffused technologies loosen those couplings in five distinct ways.
+
+| Mechanism | How it works | Example |
+| --- | --- | --- |
+| Substitution | Gives people another way to meet a need when the usual system fails | Rooftop solar during grid outages |
+| Decentralisation | Spreads critical services across many small units that fail independently | Mini-grids, distributed water treatment |
+| Speed of response | Moves information and resources faster than a shock spreads | Early-warning text alerts, digital cash transfers |
+| Learning curves | Each wave of adoption makes the next one cheaper | Solar panels, lithium-ion batteries |
+| Household buffers | Helps families smooth income and share risk | Mobile money, index insurance |
+
+**Substitution** is the simplest. A household with a solar panel and a battery still has light and phone charging when the grid goes down; a farmer with access to drought-tolerant seed still has a harvest in a dry year. The technology does not prevent the shock, but it provides a second route around it.
+
+**Decentralisation** changes how failure spreads. A large, centralised system is efficient in normal times but brittle under stress: one failure can cascade across everything connected to it. Many small, modular units are individually less efficient, but they fail one at a time rather than all at once. This is why distributed solar has proved so valuable in Ukraine, where the centralised grid is a target.
+
+**Speed of response** matters because compound crises are often races between a shock and the response to it. The Global Commission on Adaptation estimated that 24 hours' warning of a coming storm or heatwave can cut the ensuing damage by 30%. Digital payment systems let governments and aid agencies move cash to affected families in days rather than weeks.
+
+**Learning curves** create a virtuous circle. The cost of many technologies falls predictably as cumulative production grows, a regularity first described for aircraft manufacturing in the 1930s and now known as Wright's law. Solar panels and lithium-ion batteries both became roughly 90% cheaper over the 2010s. Research by Rupert Way and colleagues at Oxford suggests that a rapid shift to clean energy, driven by these learning curves, would probably save the world money compared with a slower one. Diffusion, in other words, is self-reinforcing: early adoption pays for later affordability.
+
+**Household buffers** are the least visible but perhaps the most important mechanism. Shocks become crises when they force poor families into decisions that cause lasting harm: selling livestock, pulling children out of school, skipping meals. Technologies that let families save, borrow, insure and receive help from relatives turn a temporary shock into a manageable one.
+
+## The evidence: three cases
+
+### Mobile money in Kenya
+
+Kenya's M-Pesa, launched in 2007, let people send money by text message. It spread with extraordinary speed. The economists William Jack and Tavneet Suri studied what happened when households were hit by negative shocks, such as illness, job loss or a failed harvest. Families using mobile money were able to keep their consumption steady, largely because relatives and friends could send them money quickly and cheaply. Households without access to it saw their consumption fall.
+
+A later study by the same authors estimated that access to mobile money lifted around 2% of Kenyan households out of poverty, with particularly large gains for households headed by women. The technology was not designed as a resilience tool. It became one because it diffused widely enough to connect people to their networks of support.
+
+### Early warning in Bangladesh
+
+Bangladesh sits on a low-lying delta exposed to some of the world's most destructive tropical cyclones. In 1970 the Bhola cyclone killed somewhere between 300,000 and 500,000 people. Since then the country has built one of the world's most effective early-warning and evacuation systems, combining forecasts, radio and mobile alerts, tens of thousands of trained volunteers and a network of cyclone shelters. The Cyclone Preparedness Programme it relies on dates back to 1972.
+
+<BarChart
+  label="Early warning"
+  title="Warned and ready"
+  subtitle="Deaths from major cyclones in Bangladesh, approximate"
+  sort="none"
+  highlight={['Cyclone Sidr, 2007']}
+  data={[
+    { label: 'Bhola cyclone, 1970', value: 300000 },
+    { label: 'Cyclone of 1991', value: 138000 },
+    { label: 'Cyclone Sidr, 2007', value: 3400 },
+  ]}
+  note="1970 figure is the lower end of estimates (300,000–500,000). Storms differ in strength and track, so the comparison is indicative."
+  source="Government of Bangladesh; published estimates"
+/>
+
+The decline in deaths is not the product of a single new invention. Weather forecasting, radio and mobile phones all existed long before. What changed was how deeply those technologies were woven into local institutions, so that a forecast in Dhaka became a warning in every coastal village, and a warning became an evacuation. That is diffusion in its fullest sense. It is also why the World Meteorological Organization's *Early Warnings for All* initiative, launched in 2022, aims to put every person on Earth under the protection of such a system by 2027.
+
+### Distributed solar under stress
+
+The third case is still unfolding. Across very different crises, from war in Ukraine to price shocks in Europe and grid failures in South Asia and Africa, people have turned to small-scale solar and batteries. Because the panels are modular, cheap and quick to install, they can be deployed by households and small firms without waiting for national utilities or large infrastructure projects.
+
+This is diffusion acting as a shock absorber in real time. It works only because a decade of learning-curve cost declines had already made the technology cheap enough to buy in a hurry.
+
+<PullQuote>
+The technologies that protect us in the next crisis are mostly the ones that were already spreading before it began.
+</PullQuote>
+
+## When diffusion creates fragility
+
+Diffusion is not automatically protective. Spreading a technology widely can create new channels for shocks to travel along, and three deserve attention.
+
+**Concentrated supply chains.** A technology can be widely *used* while being narrowly *made*. The International Energy Agency found that China accounts for more than 80% of every main stage of solar-panel manufacturing. A large share of the world's most advanced semiconductors comes from a handful of plants in Taiwan. When the production of a resilience technology is concentrated in one place, a geopolitical or natural shock there can stall its diffusion everywhere else at exactly the wrong moment.
+
+**Digital monocultures.** When almost everyone uses the same software, a single fault can spread instantly. In July 2024 a faulty update to a widely used cybersecurity product crashed around 8.5m Windows computers worldwide, grounding flights and disrupting hospitals and banks. The very ubiquity that made the product effective made the failure systemic. Diversity, in technology as in ecosystems, is a defence.
+
+**Uneven adoption.** Diffusion that reaches some people and not others can widen the gap in who is protected. Heat is a clear example: those with air-conditioning are shielded from heatwaves, while those without face rising risks, and the extra demand for electricity can strain grids for everyone. Resilience that depends on being able to afford the technology risks turning a shared shock into an unequal one.
+
+<Callout type="implication" title="Speed with diversity">
+The goal is not simply faster diffusion but **resilient diffusion**: technologies spread widely, sourced from more than one place, built on open standards and backed by fallbacks that still work when the digital or physical network fails.
+</Callout>
+
+## What speeds diffusion up
+
+If diffusion is a resilience strategy, the obvious question is what makes it faster and deeper. The research points to a handful of consistent drivers.
+
+- **The cost of capital.** Many resilience technologies, from solar to water storage, are cheap to run but expensive to buy. In poorer countries, high interest rates can double the cost of the same project. Cheaper finance and guarantees can bring the steep part of the S-curve forward by years.
+- **Absorptive capacity.** Technologies spread fastest where there are skills to install, maintain and adapt them. Technicians, extension workers and local entrepreneurs are part of the infrastructure.
+- **Standards and interoperability.** Mobile money took off fastest where payment systems could talk to each other. Common standards let technologies plug into existing systems rather than requiring new ones.
+- **Local adaptation.** Technologies that are redesigned for local conditions, such as pay-as-you-go solar or seed varieties bred for local soils, spread faster than those transplanted unchanged.
+- **Demonstration and trust.** People adopt what their neighbours have already shown to work. Public procurement and visible early deployments can kick-start the copying that drives the S-curve.
+- **Openness.** Patent pools, open-source software and voluntary licensing can lower the cost of producing a technology in more places, which also diversifies supply.
+
+## What it implies
+
+The resilience debate tends to measure progress by what is invented: the newest model, the latest pilot, the most ambitious prototype. A diffusion lens suggests different metrics. How many people are covered by a working early-warning system? What share of households can receive money within a day of a shock? How much of a country's essential power can keep running when the main grid fails? These are questions about the depth and evenness of adoption, not about the frontier.
+
+Three practical priorities follow. First, governments and development banks should treat the spread of proven, multi-purpose technologies as core resilience investment, alongside the more familiar sea walls and grain reserves. Technologies that help with several crises at once, such as distributed clean power, digital payments and early warnings, offer the highest returns in a polycrisis because they loosen several couplings at the same time.
+
+Second, speed must come with diversity. Diversifying where key technologies are made, insisting on interoperability and keeping simple, analogue fallbacks will stop today's resilience technology from becoming tomorrow's single point of failure.
+
+Third, attention belongs at the bottom of the S-curve. The people with the least access to useful technologies are usually the ones most exposed to compound shocks. Closing that gap is not only a question of fairness. In a world where crises spread through their weakest links, it is the most direct way to make the whole system stronger.

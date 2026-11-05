@@ -98,7 +98,7 @@ Plain Markdown (headings, lists, tables, blockquotes, footnotes) is styled autom
    - Build output directory: `dist`
 4. Environment variables (Production and Preview):
    - `NODE_VERSION` = `24`
-   - `SITE_URL` = your final URL, e.g. `https://explainers.hheuristics.com` (used for canonical links, RSS and the sitemap)
+   - `SITE_URL` = your final URL, `https://explainers.hheuristics.com` (the default in `astro.config.mjs`; used for canonical links, RSS and the sitemap)
 5. **Save and Deploy.** Add a custom domain under the project's **Custom domains** tab.
 
 ### Option B: Cloudflare Workers (static assets)

@@ -4,7 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
 // Set SITE_URL in Cloudflare's build environment variables once you have a domain.
-const site = process.env.SITE_URL || 'https://informative-webpage-platform.pages.dev';
+const site = process.env.SITE_URL || 'https://explainers.hheuristics.com';
 
 export default defineConfig({
   site,
