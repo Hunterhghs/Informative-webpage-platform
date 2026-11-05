@@ -1,0 +1,37 @@
+---
+import type { Article } from '../lib/articles';
+import { formatDate, issueNo } from '../lib/articles';
+import { topicById } from '../site.config';
+
+interface Props { article: Article; showTopic?: boolean }
+const { article, showTopic = true } = Astro.props;
+const { data } = article;
+const topic = topicById(data.topic);
+const haystack = [data.title, data.dek, data.kicker, topic?.name, ...data.tags].join(' ').toLowerCase();
+---
+<li class="row" data-topic={data.topic} data-search={haystack}>
+  <div class="row__meta">
+    <span class="issue">{issueNo(article.number)}</span>
+    <time class="meta" datetime={data.date.toISOString()}>{formatDate(data.date, 'short')}</time>
+  </div>
+  <div class="row__main">
+    {showTopic && topic && <a class="kicker" href={`/topics/${topic.id}/`}>{data.kicker || topic.name}</a>}
+    <h3 class="headline row__title"><a href={article.url}>{data.title}</a></h3>
+    <p class="dek row__dek">{data.dek}</p>
+  </div>
+  <span class="meta row__time">{article.readingMinutes} min</span>
+</li>
+
+<style>
+  .row { display: grid; grid-template-columns: 120px minmax(0, 1fr) 60px; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
+  .row__meta { display: grid; gap: 4px; align-content: start; padding-top: 2px; }
+  .row__main { display: grid; gap: 5px; }
+  .row__title { font-size: 1.25rem; line-height: 1.2; }
+  .row__dek { font-size: 0.96875rem; }
+  .row__time { text-align: right; padding-top: 2px; }
+  @media (max-width: 620px) {
+    .row { grid-template-columns: 1fr; gap: 6px; }
+    .row__meta { display: flex; gap: 12px; align-items: baseline; }
+    .row__time { display: none; }
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+/**
+ * Boxed aside. type: "note" | "definition" | "method" | "implication"
+ * <Callout type="definition" title="What is a polycrisis?">...</Callout>
+ */
+interface Props { type?: 'note' | 'definition' | 'method' | 'implication'; title?: string }
+const { type = 'note', title } = Astro.props;
+const labels = { note: 'Note', definition: 'Definition', method: 'Methodology', implication: 'So what?' };
+---
+<aside class:list={['callout', `callout--${type}`]}>
+  <p class="callout__label">{labels[type]}</p>
+  {title && <p class="callout__title">{title}</p>}
+  <div class="callout__body"><slot /></div>
+</aside>
+
+<style>
+  .callout { margin: 2rem 0; padding: 18px 22px 6px; background: var(--sand); border-left: 4px solid var(--navy); }
+  .callout--definition { background: var(--mint); border-color: var(--teal); }
+  .callout--method { background: var(--pale); border-color: var(--blue); }
+  .callout--implication { background: var(--peach); border-color: var(--orange); }
+  .callout__label { margin: 0 0 4px; font-family: var(--sans); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); }
+  .callout--definition .callout__label { color: var(--teal-dark); }
+  .callout--implication .callout__label { color: var(--orange-ink); }
+  .callout__title { margin: 0 0 6px; font-family: var(--sans); font-size: 1.0625rem; font-weight: 700; line-height: 1.3; }
+  .callout__body { font-size: 1rem; line-height: 1.55; }
+  .callout__body :global(p) { margin: 0 0 12px; }
+  .callout__body :global(ul) { margin: 0 0 12px; padding-left: 1.2em; }
+</style>

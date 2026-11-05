@@ -1,0 +1,57 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE, TOPICS } from '../site.config';
+import { getArticles } from '../lib/articles';
+const count = (await getArticles()).length;
+---
+<Base title="About" description={`About ${SITE.name}.`}>
+  <div class="container">
+    <header class="page-intro">
+      <span class="kicker">About</span>
+      <h1>{SITE.tagline}</h1>
+      <p>{SITE.description}</p>
+    </header>
+    <div class="about">
+      <div class="prose-lite">
+        <h2>What we publish</h2>
+        <p>
+          Each H Heuristics explainer takes one question and answers it properly: what is happening, why it matters,
+          what the evidence says and what it implies. Pieces are written to be read in ten minutes and kept for years.
+        </p>
+        <h2>How we work</h2>
+        <ul>
+          <li><strong>Evidence first.</strong> Every claim is sourced; every chart names its data.</li>
+          <li><strong>Systems thinking.</strong> We look for the links between problems, not just the problems.</li>
+          <li><strong>Plain language.</strong> Technical precision without jargon.</li>
+          <li><strong>One at a time.</strong> Explainers are numbered and published individually, building a connected library.</li>
+        </ul>
+        <h2>Who is behind it</h2>
+        <p>{SITE.name} is led by {SITE.author}, {SITE.authorRole.replace(/^Founder, /, 'founder of ')}.</p>
+      </div>
+      <aside class="facts">
+        <dl>
+          <div><dt>Explainers published</dt><dd>{count}</dd></div>
+          <div><dt>Topics covered</dt><dd>{TOPICS.length}</dd></div>
+        </dl>
+        <a class="btn" href="/archive/">Browse the archive →</a>
+      </aside>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .about { display: grid; grid-template-columns: minmax(0, 680px) 260px; gap: 64px; }
+  .prose-lite { font-size: 1.125rem; line-height: 1.62; }
+  .prose-lite h2 { font: 650 1.5rem/1.2 var(--serif); color: var(--navy); margin: 0 0 0.5em; }
+  .prose-lite h2:not(:first-child) { margin-top: 1.8em; }
+  .prose-lite p { margin: 0 0 1em; }
+  .prose-lite ul { padding-left: 1.2em; }
+  .prose-lite li { margin: 0.4em 0; }
+  .prose-lite li::marker { color: var(--orange); }
+  .facts { font-family: var(--sans); align-self: start; border-top: 3px solid var(--navy); }
+  .facts dl { margin: 0 0 18px; }
+  .facts div { padding: 14px 0; border-bottom: 1px solid var(--rule); }
+  .facts dt { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--mgrey); }
+  .facts dd { margin: 4px 0 0; font: 650 2.25rem/1 var(--serif); color: var(--navy); }
+  @media (max-width: 860px) { .about { grid-template-columns: 1fr; gap: 40px; } }
+</style>

@@ -1,0 +1,43 @@
+---
+import Logo from './Logo.astro';
+import { NAV, SITE, TOPICS } from '../site.config';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container">
+    <div class="grid">
+      <div class="brand">
+        <Logo inverse />
+        <p>{SITE.description}</p>
+      </div>
+      <div>
+        <h2>Topics</h2>
+        <ul>{TOPICS.map((t) => <li><a href={`/topics/${t.id}/`}>{t.name}</a></li>)}</ul>
+      </div>
+      <div>
+        <h2>Explore</h2>
+        <ul>
+          {NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+          <li><a href="/search/">Search</a></li>
+          <li><a href="/rss.xml">RSS feed</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© {year} {SITE.name}. All rights reserved.</span>
+      <span>{SITE.tagline}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--navy); color: #c9d3e0; font-family: var(--sans); font-size: 0.875rem; border-top: 4px solid var(--orange); }
+  .grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; padding: 48px 0 36px; }
+  .brand p { max-width: 42ch; line-height: 1.6; margin: 18px 0 0; }
+  h2 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #f2b66e; margin: 6px 0 14px; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  a { color: #fff; text-decoration: none; }
+  a:hover { text-decoration: underline; color: #fff; }
+  .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; border-top: 1px solid var(--navy-2); padding: 18px 0 28px; font-size: 0.75rem; color: #8d9aab; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr 1fr; } .brand { grid-column: 1 / -1; } }
+</style>

@@ -1,0 +1,75 @@
+---
+import Logo from './Logo.astro';
+import { NAV, SITE } from '../site.config';
+import { formatDate } from '../lib/articles';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const today = formatDate(new Date());
+---
+<header class="site-header">
+  <div class="strip">
+    <div class="container strip__inner">
+      <span>{today}</span>
+      <span class="strip__tag">{SITE.tagline}</span>
+    </div>
+  </div>
+  <div class="bar">
+    <div class="container bar__inner">
+      <a href="/" class="bar__logo" aria-label={`${SITE.name} — home`}><Logo /></a>
+      <nav aria-label="Primary">
+        <ul>
+          {NAV.map((n) => (
+            <li><a href={n.href} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <a href="/search/" class="search-link" aria-label="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5" stroke-linecap="round"/></svg>
+        <span>Search</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header { position: sticky; top: 0; z-index: 50; background: var(--paper); }
+  .strip { background: var(--navy); color: #c9d3e0; font-family: var(--sans); font-size: 0.75rem; }
+  .strip__inner { display: flex; justify-content: space-between; gap: 16px; padding-top: 6px; padding-bottom: 6px; }
+  .strip__tag { color: #f2b66e; letter-spacing: 0.02em; }
+  .bar { border-bottom: 1px solid var(--rule); }
+  .bar__inner { display: flex; align-items: center; gap: 28px; min-height: 64px; }
+  .bar__logo { text-decoration: none; flex-shrink: 0; }
+  nav { flex: 1; min-width: 0; }
+  nav ul { display: flex; gap: 4px; list-style: none; margin: 0; padding: 0; }
+  nav a {
+    display: block;
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 21px 12px 19px;
+    border-bottom: 3px solid transparent;
+  }
+  nav a:hover { color: var(--blue); }
+  nav a[aria-current='page'] { border-bottom-color: var(--orange); font-weight: 650; }
+  .search-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--sans); font-size: 0.875rem; font-weight: 600;
+    color: var(--navy); text-decoration: none;
+    border: 1px solid var(--rule); padding: 8px 12px;
+  }
+  .search-link:hover { border-color: var(--navy); }
+
+  @media (max-width: 760px) {
+    .strip__tag { display: none; }
+    .bar__inner { flex-wrap: wrap; gap: 0 12px; min-height: 0; padding-top: 12px; }
+    .bar__logo { order: 1; }
+    .search-link { order: 2; margin-left: auto; padding: 7px 9px; }
+    .search-link span { display: none; }
+    nav { order: 3; flex-basis: 100%; overflow-x: auto; margin: 0 calc(var(--gutter) * -1); padding: 0 var(--gutter); }
+    nav a { padding: 12px 10px 10px; font-size: 0.875rem; white-space: nowrap; }
+    nav li:first-child a { padding-left: 0; }
+  }
+</style>

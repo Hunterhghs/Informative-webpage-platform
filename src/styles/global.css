@@ -1,0 +1,286 @@
+/* ==========================================================================
+   H Heuristics — global styles
+   Editorial / consulting aesthetic: serif headlines, thin rules, restrained
+   palette, data-forward charts.
+   ========================================================================== */
+
+:root {
+  /* Brand palette */
+  --navy: #0e1b2c;
+  --navy-2: #1b2e47;
+  --blue: #1d4e89;
+  --orange: #e0892b;
+  --orange-ink: #a85a15; /* accessible orange for small text */
+  --teal: #2a9d8f;
+  --teal-dark: #1f7268;
+  --red: #9b2226;
+  --ink: #16181c;
+  --grey: #4a4f58;
+  --mgrey: #6b717b;
+  --lgrey: #c9ced6;
+  --rule: #d5d9df;
+  --rule-soft: #e7eaee;
+  --pale: #eaf1f9;
+  --sand: #f5f7fa;
+  --peach: #fbebdd;
+  --mint: #e3f2ef;
+  --paper: #ffffff;
+
+  /* Chart series, in order */
+  --s1: var(--navy);
+  --s2: var(--orange);
+  --s3: var(--teal);
+  --s4: var(--blue);
+  --s5: var(--red);
+  --s6: #8a8f98;
+
+  /* Type */
+  --serif: 'Source Serif 4 Variable', 'Source Serif Pro', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Layout */
+  --page: 1200px;
+  --measure: 680px;
+  --wide: 880px;
+  --gutter: clamp(16px, 4vw, 32px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 84px;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--blue);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+a:hover {
+  color: var(--navy);
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--peach);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--navy);
+  color: #fff;
+  padding: 8px 14px;
+  font-family: var(--sans);
+  font-size: 0.875rem;
+}
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
+}
+
+.container {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Shared editorial elements
+   -------------------------------------------------------------------------- */
+
+.kicker {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange-ink);
+  text-decoration: none;
+}
+a.kicker:hover {
+  color: var(--navy);
+}
+
+.meta {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  color: var(--mgrey);
+  letter-spacing: 0.01em;
+}
+.meta .sep {
+  margin: 0 0.45em;
+  color: var(--lgrey);
+}
+
+.issue {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 3px solid var(--navy);
+  padding-top: 10px;
+  margin: 0 0 22px;
+}
+.section-head h2 {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+.section-head a {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.headline {
+  font-family: var(--serif);
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  line-height: 1.12;
+  color: var(--ink);
+  margin: 0;
+}
+.headline a {
+  color: inherit;
+  text-decoration: none;
+}
+.headline a:hover {
+  color: var(--blue);
+}
+
+.dek {
+  font-family: var(--serif);
+  color: var(--grey);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tag-list a,
+.tag-list span {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  color: var(--grey);
+  border: 1px solid var(--rule);
+  padding: 3px 9px;
+  text-decoration: none;
+  border-radius: 2px;
+}
+.tag-list a:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 10px 16px;
+  border: 1px solid var(--navy);
+  color: var(--navy);
+  background: transparent;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn:hover {
+  background: var(--navy);
+  color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Page intro (archive, topics, about, search)
+   -------------------------------------------------------------------------- */
+
+.page-intro {
+  padding: 40px 0 28px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 36px;
+}
+.page-intro h1 {
+  font-family: var(--serif);
+  font-weight: 650;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  margin: 8px 0 12px;
+}
+.page-intro p {
+  max-width: 62ch;
+  font-size: 1.1875rem;
+  color: var(--grey);
+  margin: 0;
+}
+
+main {
+  min-height: 60vh;
+  padding-bottom: 72px;
+}

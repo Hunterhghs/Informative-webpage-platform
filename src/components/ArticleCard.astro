@@ -1,0 +1,41 @@
+---
+import type { Article } from '../lib/articles';
+import { formatDate, issueNo } from '../lib/articles';
+import { topicById } from '../site.config';
+
+interface Props {
+  article: Article;
+  size?: 'sm' | 'md' | 'lg';
+  showDek?: boolean;
+  showTopic?: boolean;
+}
+const { article, size = 'md', showDek = true, showTopic = true } = Astro.props;
+const { data } = article;
+const topic = topicById(data.topic);
+const label = data.kicker || topic?.name;
+---
+<article class:list={['card', `card--${size}`]}>
+  <div class="card__top">
+    {showTopic && label && <a class="kicker" href={`/topics/${data.topic}/`}>{label}</a>}
+    <span class="issue">{issueNo(article.number)}</span>
+  </div>
+  <h3 class="headline card__title"><a href={article.url}>{data.title}</a></h3>
+  {showDek && <p class="dek card__dek">{data.dek}</p>}
+  <p class="meta">
+    <time datetime={data.date.toISOString()}>{formatDate(data.date, 'short')}</time>
+    <span class="sep">|</span>{article.readingMinutes} min read
+    {data.draft && <><span class="sep">|</span><strong style="color:var(--red)">Draft</strong></>}
+  </p>
+</article>
+
+<style>
+  .card { display: grid; gap: 8px; align-content: start; }
+  .card__top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .card__title { font-size: 1.3125rem; }
+  .card__dek { font-size: 1rem; }
+  .card--sm .card__title { font-size: 1.0625rem; line-height: 1.22; }
+  .card--sm .card__dek { font-size: 0.9375rem; }
+  .card--lg .card__title { font-size: clamp(1.75rem, 3.6vw, 2.625rem); line-height: 1.06; }
+  .card--lg .card__dek { font-size: 1.25rem; }
+  .meta { margin: 2px 0 0; }
+</style>

@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import ArticleRow from '../components/ArticleRow.astro';
+import { getArticles } from '../lib/articles';
+import { TOPICS } from '../site.config';
+
+const articles = await getArticles();
+const groups = new Map<string, typeof articles>();
+for (const a of articles) {
+  const key = a.data.date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  groups.set(key, [...(groups.get(key) ?? []), a]);
+}
+const counts = Object.fromEntries(TOPICS.map((t) => [t.id, articles.filter((a) => a.data.topic === t.id).length]));
+---
+<Base title="Archive" description="Every H Heuristics explainer, newest first.">
+  <div class="container">
+    <header class="page-intro">
+      <span class="kicker">Archive</span>
+      <h1>Every explainer, in one place</h1>
+      <p>{articles.length} explainers published so far, newest first. Filter by topic or type to narrow the list; use <a href="/search/">search</a> to look inside the full text.</p>
+    </header>
+
+    <div class="tools" role="search">
+      <label class="visually-hidden" for="filter">Filter by title or keyword</label>
+      <input id="filter" type="search" placeholder="Filter by title, topic or tag…" autocomplete="off" />
+      <div class="chips" role="group" aria-label="Topic">
+        <button type="button" class="chip" data-topic="" aria-pressed="true">All <span>{articles.length}</span></button>
+        {TOPICS.filter((t) => counts[t.id] > 0).map((t) => (
+          <button type="button" class="chip" data-topic={t.id} aria-pressed="false">{t.name} <span>{counts[t.id]}</span></button>
+        ))}
+      </div>
+      <p class="meta" id="count" aria-live="polite"></p>
+    </div>
+
+    {[...groups].map(([month, items]) => (
+      <section class="month" data-month>
+        <h2 class="month__h">{month}</h2>
+        <ol class="list">{items.map((a) => <ArticleRow article={a} />)}</ol>
+      </section>
+    ))}
+    <p class="none" id="none" hidden>No explainers match that filter.</p>
+  </div>
+</Base>
+
+<script>
+  const input = document.getElementById('filter') as HTMLInputElement;
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')];
+  const rows = [...document.querySelectorAll<HTMLLIElement>('.row')];
+  const months = [...document.querySelectorAll<HTMLElement>('[data-month]')];
+  const count = document.getElementById('count')!;
+  const none = document.getElementById('none')!;
+  const params = new URLSearchParams(location.search);
+  let topic = params.get('topic') ?? '';
+
+  function apply() {
+    const q = input.value.trim().toLowerCase();
+    const terms = q.split(/\s+/).filter(Boolean);
+    let shown = 0;
+    rows.forEach((r) => {
+      const ok = (!topic || r.dataset.topic === topic) && terms.every((t) => r.dataset.search!.includes(t));
+      r.hidden = !ok;
+      if (ok) shown++;
+    });
+    months.forEach((m) => (m.hidden = !m.querySelector('.row:not([hidden])')));
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.topic === topic)));
+    count.textContent = q || topic ? `Showing ${shown} of ${rows.length}` : '';
+    none.hidden = shown > 0;
+  }
+
+  input.addEventListener('input', apply);
+  chips.forEach((c) =>
+    c.addEventListener('click', () => {
+      topic = c.dataset.topic ?? '';
+      const url = new URL(location.href);
+      topic ? url.searchParams.set('topic', topic) : url.searchParams.delete('topic');
+      history.replaceState(null, '', url);
+      apply();
+    }),
+  );
+  apply();
+</script>
+
+<style>
+  .tools { display: grid; gap: 14px; margin-bottom: 28px; }
+  input[type='search'] {
+    width: 100%; max-width: 520px; font: 1rem var(--sans); padding: 11px 14px;
+    border: 1px solid var(--lgrey); border-radius: 0; background: #fff; color: var(--ink);
+  }
+  input[type='search']:focus { outline: 2px solid var(--orange); outline-offset: 0; border-color: var(--navy); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font: 600 0.8125rem var(--sans); color: var(--ink); background: #fff;
+    border: 1px solid var(--rule); padding: 7px 12px; cursor: pointer;
+  }
+  .chip span { color: var(--mgrey); font-weight: 500; margin-left: 4px; }
+  .chip:hover { border-color: var(--navy); }
+  .chip[aria-pressed='true'] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .chip[aria-pressed='true'] span { color: #f2b66e; }
+  #count { margin: 0; min-height: 1.2em; }
+  .month { margin-bottom: 36px; }
+  .month__h { margin: 0; padding: 10px 0; border-top: 3px solid var(--navy); border-bottom: 1px solid var(--rule); font: 700 0.8125rem var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .none { padding: 40px 0; color: var(--grey); }
+</style>

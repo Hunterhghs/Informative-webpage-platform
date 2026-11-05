@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleRow from '../../components/ArticleRow.astro';
+import { getArticles, type Article } from '../../lib/articles';
+import { TOPICS } from '../../site.config';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return TOPICS.map((t) => ({
+    params: { topic: t.id },
+    props: { topic: t, items: articles.filter((a) => a.data.topic === t.id) },
+  }));
+}
+
+interface Props { topic: (typeof TOPICS)[number]; items: Article[] }
+const { topic, items } = Astro.props;
+const others = TOPICS.filter((t) => t.id !== topic.id);
+---
+<Base title={topic.name} description={topic.blurb}>
+  <div class="container">
+    <header class="page-intro">
+      <a class="kicker" href="/topics/">Topics</a>
+      <h1>{topic.name}</h1>
+      <p>{topic.blurb}</p>
+    </header>
+    <div class="layout">
+      <div>
+        {items.length ? (
+          <ol class="list">{items.map((a) => <ArticleRow article={a} showTopic={false} />)}</ol>
+        ) : (
+          <p class="empty">Nothing published in this section yet.</p>
+        )}
+      </div>
+      <aside>
+        <p class="aside__h">Other topics</p>
+        <ul>{others.map((t) => <li><a href={`/topics/${t.id}/`}>{t.name}</a></li>)}</ul>
+      </aside>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 56px; }
+  .list { list-style: none; margin: 0; padding: 0; border-top: 3px solid var(--navy); }
+  aside { font-family: var(--sans); }
+  .aside__h { margin: 0 0 6px; padding-top: 10px; border-top: 3px solid var(--navy); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); }
+  aside ul { list-style: none; margin: 0; padding: 0; }
+  aside li { border-bottom: 1px solid var(--rule); }
+  aside a { display: block; padding: 10px 0; color: var(--ink); text-decoration: none; font-size: 0.9375rem; }
+  aside a:hover { color: var(--blue); }
+  .empty { color: var(--grey); }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; gap: 40px; } }
+</style>

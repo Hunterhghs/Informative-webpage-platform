@@ -1,0 +1,66 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Search" description="Search the full text of every H Heuristics explainer.">
+  <div class="container">
+    <header class="page-intro">
+      <span class="kicker">Search</span>
+      <h1>Search every explainer</h1>
+      <p>Full-text search across the whole library. Filter results by topic.</p>
+    </header>
+    <div id="search" class="search"></div>
+    <noscript><p>Search needs JavaScript. You can browse the <a href="/archive/">archive</a> instead.</p></noscript>
+    <p class="dev-note" id="dev-note" hidden>
+      The search index is built by <code>npm run build</code>. Run <code>npm run build &amp;&amp; npm run preview</code> to try search locally.
+    </p>
+  </div>
+</Base>
+
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+<script is:inline>
+  (function () {
+    var s = document.createElement('script');
+    s.src = '/pagefind/pagefind-ui.js';
+    s.onload = function () {
+      var q = new URLSearchParams(location.search).get('q');
+      var ui = new PagefindUI({
+        element: '#search',
+        showSubResults: true,
+        showImages: false,
+        resetStyles: false,
+        autofocus: true,
+        translations: { placeholder: 'Search explainers…', zero_results: 'No explainers match “[SEARCH_TERM]”' },
+      });
+      if (q) ui.triggerSearch(q);
+    };
+    s.onerror = function () {
+      document.getElementById('dev-note').hidden = false;
+    };
+    document.head.appendChild(s);
+  })();
+</script>
+
+<style is:global>
+  .search {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #1d4e89;
+    --pagefind-ui-text: #16181c;
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-border: #c9ced6;
+    --pagefind-ui-tag: #f5f7fa;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 0;
+    --pagefind-ui-font: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    max-width: 900px;
+  }
+  .search .pagefind-ui__result-title,
+  .search .pagefind-ui__result-link {
+    font-family: 'Source Serif 4 Variable', Georgia, serif;
+    font-weight: 650;
+  }
+  .search .pagefind-ui__result-link { color: #16181c; }
+  .search .pagefind-ui__result-link:hover { color: #1d4e89; }
+  .search mark { background: #fbebdd; color: inherit; }
+  .search .pagefind-ui__search-input:focus { outline: 2px solid #e0892b; outline-offset: 0; }
+  .dev-note { color: #4a4f58; font-family: 'Inter Variable', sans-serif; font-size: 0.9375rem; }
+</style>

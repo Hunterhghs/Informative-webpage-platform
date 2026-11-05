@@ -1,0 +1,70 @@
+---
+/**
+ * Horizontal bar chart.
+ * <BarChart title="..." subtitle="..." unit="%" source="..."
+ *   data={[{ label: 'India', value: 42 }, { label: 'Brazil', value: 18 }]}
+ *   highlight={['India']} />
+ */
+import ChartFrame from './ChartFrame.astro';
+import { fmt } from '../../lib/chart';
+
+interface Datum { label: string; value: number; note?: string }
+interface Props {
+  data: Datum[];
+  title?: string;
+  subtitle?: string;
+  source?: string;
+  note?: string;
+  label?: string;
+  unit?: string;
+  prefix?: string;
+  decimals?: number;
+  highlight?: string[];
+  sort?: 'desc' | 'asc' | 'none';
+  color?: string;
+  wide?: boolean;
+}
+
+const {
+  data, unit = '', prefix = '', decimals: _d, highlight = [], sort = 'desc',
+  color = 'var(--navy)', ...frame
+} = Astro.props;
+
+const decimals = Astro.props.decimals ?? (data.some((d) => !Number.isInteger(d.value)) ? 1 : 0);
+const rows = sort === 'none' ? data : [...data].sort((a, b) => (sort === 'desc' ? b.value - a.value : a.value - b.value));
+const lo = Math.min(0, ...rows.map((d) => d.value));
+const hi = Math.max(0, ...rows.map((d) => d.value));
+const span = hi - lo || 1;
+const zero = ((0 - lo) / span) * 100;
+const hasHighlight = highlight.length > 0;
+---
+<ChartFrame {...frame}>
+  <div class="bars" role="table" aria-label={frame.title ?? 'Bar chart'}>
+    {rows.map((d) => {
+      const w = (Math.abs(d.value) / span) * 100;
+      const left = d.value >= 0 ? zero : zero - w;
+      const on = !hasHighlight || highlight.includes(d.label);
+      return (
+        <div class="bar" role="row">
+          <span class="bar__label" role="rowheader">{d.label}</span>
+          <span class="bar__track" role="cell">
+            <span class="bar__fill" style={`left:${left}%;width:${w}%;background:${on ? (hasHighlight ? 'var(--orange)' : color) : 'var(--lgrey)'}`}></span>
+            {lo < 0 && <span class="bar__zero" style={`left:${zero}%`}></span>}
+          </span>
+          <span class:list={['bar__value', { 'is-on': hasHighlight && on }]} role="cell">{fmt(d.value, { decimals, prefix, unit })}</span>
+        </div>
+      );
+    })}
+  </div>
+</ChartFrame>
+
+<style>
+  .bars { display: grid; gap: 7px; }
+  .bar { display: grid; grid-template-columns: minmax(84px, 30%) 1fr auto; align-items: center; gap: 12px; font-size: 0.875rem; }
+  .bar__label { color: var(--ink); line-height: 1.25; }
+  .bar__track { position: relative; height: 20px; background: linear-gradient(to right, var(--rule-soft) 1px, transparent 1px) 0 0 / 25% 100%; }
+  .bar__fill { position: absolute; top: 0; bottom: 0; }
+  .bar__zero { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--ink); }
+  .bar__value { font-variant-numeric: tabular-nums; color: var(--grey); min-width: 3.5em; text-align: right; }
+  .bar__value.is-on { color: var(--ink); font-weight: 700; }
+</style>

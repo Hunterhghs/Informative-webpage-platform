@@ -1,0 +1,144 @@
+---
+/**
+ * Time-series chart (lines or columns), rendered to static SVG + HTML labels.
+ *
+ * <LineChart title="..." unit="%" source="..."
+ *   x={[2015, 2016, 2017, 2018]}
+ *   series={[
+ *     { name: 'Advanced economies', values: [1.2, 1.5, 1.9, 2.1] },
+ *     { name: 'Emerging markets', values: [3.4, 3.1, null, 4.0] },
+ *   ]} />
+ *
+ * Set kind="column" for grouped columns. Use null for missing values.
+ */
+import ChartFrame from './ChartFrame.astro';
+import { SERIES_COLORS, fmt, niceTicks } from '../../lib/chart';
+
+interface Series { name: string; values: (number | null)[]; color?: string; dashed?: boolean }
+interface Props {
+  x: (string | number)[];
+  series: Series[];
+  kind?: 'line' | 'column';
+  title?: string;
+  subtitle?: string;
+  source?: string;
+  note?: string;
+  label?: string;
+  unit?: string;
+  prefix?: string;
+  decimals?: number;
+  yMin?: number;
+  yMax?: number;
+  wide?: boolean;
+}
+
+const { x, series, kind = 'line', unit = '', prefix = '', decimals, yMin, yMax, ...frame } = Astro.props;
+
+const all = series.flatMap((s) => s.values).filter((v): v is number => v !== null && Number.isFinite(v));
+const dataMin = Math.min(...all, kind === 'column' ? 0 : Infinity);
+const dataMax = Math.max(...all, kind === 'column' ? 0 : -Infinity);
+const ticks = niceTicks(yMin ?? dataMin, yMax ?? dataMax, 5);
+const lo = yMin ?? ticks[0];
+const hi = yMax ?? ticks[ticks.length - 1];
+const visibleTicks = ticks.filter((t) => t >= lo - 1e-9 && t <= hi + 1e-9);
+
+const W = 1000;
+const H = 1000;
+const n = x.length;
+const yPos = (v: number) => H - ((v - lo) / (hi - lo || 1)) * H;
+const yPct = (v: number) => (yPos(v) / H) * 100;
+
+// Line geometry: points at the centre of each slot (columns) or spread edge to edge (lines)
+const slot = W / n;
+const xPos = (i: number) => (kind === 'column' ? slot * (i + 0.5) : n === 1 ? W / 2 : (i / (n - 1)) * W);
+const xPct = (i: number) => (xPos(i) / W) * 100;
+
+const colorOf = (s: Series, i: number) => s.color ?? SERIES_COLORS[i % SERIES_COLORS.length];
+
+const paths = series.map((s) => {
+  let d = '';
+  let pen = false;
+  s.values.forEach((v, i) => {
+    if (v === null || !Number.isFinite(v)) { pen = false; return; }
+    d += `${pen ? 'L' : 'M'}${xPos(i).toFixed(2)},${yPos(v).toFixed(2)}`;
+    pen = true;
+  });
+  return d;
+});
+
+const groupW = slot * 0.72;
+const colW = groupW / series.length;
+
+const every = Math.max(1, Math.ceil(n / 7));
+const xLabels = x.map((v, i) => ({ v, i })).filter(({ i }) => i % every === 0 || i === n - 1)
+  // avoid last label colliding with the previous one
+  .filter(({ i }, k, arr) => !(k === arr.length - 2 && n - 1 - i < every * 0.6 && arr[arr.length - 1].i === n - 1));
+
+const zeroInRange = lo < 0 && hi > 0;
+const summary = series
+  .map((s) => `${s.name}: ${s.values.map((v, i) => `${x[i]} ${v === null ? 'n/a' : fmt(v, { decimals, prefix, unit })}`).join(', ')}`)
+  .join('. ');
+---
+<ChartFrame {...frame}>
+  {series.length > 1 && (
+    <ul class="legend">
+      {series.map((s, i) => (
+        <li><span class:list={['swatch', { 'swatch--col': kind === 'column', 'swatch--dash': s.dashed }]} style={`--c:${colorOf(s, i)}`}></span>{s.name}</li>
+      ))}
+    </ul>
+  )}
+  <div class="plot" role="img" aria-label={`${frame.title ?? 'Chart'}. ${summary}`}>
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+      {visibleTicks.map((t) => (
+        <line x1="0" x2={W} y1={yPos(t)} y2={yPos(t)} class:list={['grid', { 'grid--base': t === lo && !zeroInRange }]} />
+      ))}
+      {zeroInRange && <line x1="0" x2={W} y1={yPos(0)} y2={yPos(0)} class="grid grid--base" />}
+      {kind === 'column'
+        ? series.map((s, si) =>
+            s.values.map((v, i) =>
+              v === null ? null : (
+                <rect
+                  x={slot * i + (slot - groupW) / 2 + colW * si}
+                  width={colW * 0.92}
+                  y={Math.min(yPos(v), yPos(Math.max(lo, 0)))}
+                  height={Math.abs(yPos(v) - yPos(Math.max(lo, 0)))}
+                  fill={colorOf(s, si)}
+                />
+              ),
+            ),
+          )
+        : paths.map((d, i) => (
+            <path d={d} class="line" stroke={colorOf(series[i], i)} stroke-dasharray={series[i].dashed ? '6 5' : undefined} />
+          ))}
+    </svg>
+    <div class="ylabels" aria-hidden="true">
+      {visibleTicks.map((t) => <span style={`top:${yPct(t)}%`}>{fmt(t, { decimals: decimals ?? (Number.isInteger(t) ? 0 : 1), prefix, unit })}</span>)}
+    </div>
+    <div class="xlabels" aria-hidden="true">
+      {xLabels.map(({ v, i }) => <span style={`left:${xPct(i)}%`} class:list={{ first: kind === 'line' && i === 0, last: kind === 'line' && i === n - 1 }}>{v}</span>)}
+    </div>
+  </div>
+</ChartFrame>
+
+<style>
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: -4px 0 14px; padding: 0; font-size: 0.8125rem; color: var(--ink); }
+  .legend li { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { display: inline-block; width: 18px; height: 3px; background: var(--c); }
+  .swatch--col { width: 11px; height: 11px; }
+  .swatch--dash { background: repeating-linear-gradient(to right, var(--c) 0 5px, transparent 5px 8px); }
+  .plot { position: relative; height: clamp(200px, 42vw, 300px); margin: 6px 48px 30px 0; }
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .grid { stroke: var(--rule); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .grid--base { stroke: var(--ink); }
+  .line { fill: none; stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+  .ylabels span {
+    position: absolute; right: -48px; width: 44px; text-align: right;
+    transform: translateY(-115%); font-size: 0.75rem; color: var(--grey); font-variant-numeric: tabular-nums;
+  }
+  .xlabels span {
+    position: absolute; top: calc(100% + 7px); transform: translateX(-50%);
+    font-size: 0.75rem; color: var(--grey); white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .xlabels span.first { transform: none; }
+  .xlabels span.last { transform: translateX(-100%); }
+</style>

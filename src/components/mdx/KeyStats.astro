@@ -1,0 +1,34 @@
+---
+/** Row of headline numbers. <KeyStats items={[{ value: '2.4bn', label: 'people without clean cooking' }]} /> */
+interface Props { items: { value: string; label: string; note?: string }[]; source?: string }
+const { items, source } = Astro.props;
+---
+<div class="stats">
+  <dl style={`--cols:${Math.min(items.length, 4)}`}>
+    {items.map((s) => (
+      <div class="stat">
+        <dt>{s.label}</dt>
+        <dd class="value">{s.value}</dd>
+        {s.note && <dd class="note">{s.note}</dd>}
+      </div>
+    ))}
+  </dl>
+  {source && <p>Source: {source}</p>}
+</div>
+
+<style>
+  .stats { margin: 2.25rem 0; font-family: var(--sans); }
+  dl { display: grid; grid-template-columns: repeat(var(--cols), 1fr); margin: 0; border-top: 1px solid var(--navy); border-bottom: 1px solid var(--rule); }
+  .stat { display: flex; flex-direction: column; gap: 6px; padding: 16px 16px 18px 0; }
+  .stat + .stat { padding-left: 16px; border-left: 1px solid var(--rule); }
+  dd { margin: 0; }
+  .value { order: 1; font-family: var(--serif); font-size: clamp(1.75rem, 4vw, 2.375rem); font-weight: 650; line-height: 1; color: var(--navy); font-variant-numeric: lining-nums; }
+  dt { order: 2; font-size: 0.8125rem; line-height: 1.35; color: var(--grey); }
+  .note { order: 3; font-size: 0.75rem; color: var(--mgrey); }
+  p { margin: 8px 0 0; font-size: 0.75rem; color: var(--mgrey); }
+  @media (max-width: 560px) {
+    dl { grid-template-columns: 1fr 1fr; }
+    .stat:nth-child(odd) { padding-left: 0; border-left: 0; }
+    .stat:nth-child(n + 3) { border-top: 1px solid var(--rule); }
+  }
+</style>

@@ -1,0 +1,12 @@
+// Used only if you deploy with Cloudflare Workers (static assets).
+// Cloudflare Pages ignores this file and uses the dashboard build settings instead.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "h-heuristics",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  }
+}

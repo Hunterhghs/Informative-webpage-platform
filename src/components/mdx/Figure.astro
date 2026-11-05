@@ -1,0 +1,17 @@
+---
+/**
+ * Image or custom graphic in the house chart frame.
+ * <Figure src="/images/map.png" alt="..." title="..." source="..." />
+ * or wrap your own SVG: <Figure title="..."> <svg>...</svg> </Figure>
+ */
+import ChartFrame from './ChartFrame.astro';
+interface Props { src?: string; alt?: string; title?: string; subtitle?: string; source?: string; note?: string; label?: string; wide?: boolean }
+const { src, alt = '', ...frame } = Astro.props;
+---
+<ChartFrame {...frame}>
+  {src ? <img src={src} alt={alt} loading="lazy" decoding="async" /> : <slot />}
+</ChartFrame>
+
+<style>
+  img { display: block; width: 100%; height: auto; }
+</style>

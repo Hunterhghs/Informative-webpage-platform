@@ -1,0 +1,125 @@
+---
+title: "Style guide: every component in one place"
+dek: "A reference page for authors. It is marked as a draft, so it appears when you run the site locally but is never published."
+kicker: "For authors"
+topic: systems-science
+tags: [reference]
+date: 2026-11-05
+draft: true
+takeaways:
+  - "The <strong>In brief</strong> box comes from the <code>takeaways</code> list in the frontmatter."
+  - "Charts, stats, callouts and quotes are available in any <code>.mdx</code> file without importing anything."
+  - "Plain Markdown (headings, lists, tables, footnotes) is styled automatically."
+sources:
+  - title: "Sources come from the sources list in the frontmatter"
+    publisher: "Publisher name"
+    year: 2026
+    url: "https://example.com"
+---
+
+The opening paragraph gets a drop cap automatically, and the final paragraph ends with the orange end mark. Use `##` headings for sections: they build the contents list shown on wide screens.
+
+## Bar chart
+
+```mdx
+<BarChart title="..." subtitle="..." unit="%" source="..."
+  highlight={['B']}
+  data={[{ label: 'A', value: 12 }, { label: 'B', value: 30 }]} />
+```
+
+<BarChart
+  title="Bars sort largest-first by default"
+  subtitle="Use highlight to pick out one or more bars; negative values are supported"
+  unit="%"
+  highlight={['Beta']}
+  data={[
+    { label: 'Alpha', value: 12.5 },
+    { label: 'Beta', value: 30 },
+    { label: 'Gamma', value: -8 },
+    { label: 'Delta', value: 21 },
+  ]}
+  source="Example data"
+/>
+
+## Line and column charts
+
+```mdx
+<LineChart title="..." x={[2020, 2021, 2022]}
+  series={[{ name: 'A', values: [1, 2, 3] }, { name: 'B', values: [2, null, 4], dashed: true }]} />
+```
+
+<LineChart
+  title="Lines"
+  subtitle="Use null for gaps; add dashed: true for projections"
+  unit="%"
+  x={[2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]}
+  series={[
+    { name: 'Series A', values: [2.1, 2.4, -1.2, 3.8, 3.1, 2.6, 2.4, 2.2] },
+    { name: 'Series B', values: [1.2, 1.4, -4.5, 2.9, 2.0, 1.1, null, 1.5] },
+  ]}
+  source="Example data"
+/>
+
+<LineChart
+  kind="column"
+  wide
+  title="Columns (kind=&quot;column&quot;), wide layout"
+  subtitle="Grouped when there is more than one series"
+  prefix="$"
+  unit="bn"
+  x={['Q1', 'Q2', 'Q3', 'Q4']}
+  series={[
+    { name: '2025', values: [14, 18, 16, 21] },
+    { name: '2026', values: [17, 20, 22, 25] },
+  ]}
+  source="Example data"
+/>
+
+## Key numbers
+
+<KeyStats
+  items={[
+    { value: '42%', label: 'A headline statistic' },
+    { value: '$1.3trn', label: 'Another one', note: 'with a note' },
+    { value: '3x', label: 'And a third' },
+    { value: '2050', label: 'Up to four per row' },
+  ]}
+  source="Example"
+/>
+
+## Callouts
+
+<Callout type="definition" title="Definition">Use for defining a key term.</Callout>
+<Callout type="method" title="Methodology">Use to explain how a number was calculated.</Callout>
+<Callout type="implication" title="So what?">Use to spell out implications for decision-makers.</Callout>
+<Callout title="Note">The default, neutral box.</Callout>
+
+## Quotes
+
+<PullQuote cite="Optional attribution">A pull quote for the single most memorable line in the piece.</PullQuote>
+
+> A normal Markdown blockquote, for quoting a source inline.
+
+## Tables, lists and footnotes
+
+| Column | Another | Number |
+| --- | --- | --- |
+| Row one | Text | 1,204 |
+| Row two | Text | 873 |
+
+- Bulleted lists use orange markers.
+- Numbered lists use navy numerals.
+
+A sentence with a footnote.[^1]
+
+## Images
+
+Put image files in `public/images/` and reference them with the Figure component:
+
+```mdx
+<Figure src="/images/my-map.png" alt="Describe the image" title="Title" source="Source" />
+```
+
+That is everything. Delete nothing here; it never ships.
+
+[^1]: Footnotes collect at the bottom of the article.

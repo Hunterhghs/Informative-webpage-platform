@@ -1,0 +1,143 @@
+---
+import Base from '../layouts/Base.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getArticles, formatDate, issueNo } from '../lib/articles';
+import { SITE, TOPICS } from '../site.config';
+
+const articles = await getArticles();
+const lead = articles.find((a) => a.data.featured) ?? articles[0];
+const rest = articles.filter((a) => a !== lead);
+const side = rest.slice(0, 4);
+const latest = rest.slice(4, 10);
+const byTopic = TOPICS.map((t) => ({ ...t, items: articles.filter((a) => a.data.topic === t.id) })).filter(
+  (t) => t.items.length > 0,
+);
+---
+<Base>
+  <div class="container">
+    <section class="intro" aria-label="About this site">
+      <p class="intro__line"><strong>{SITE.name}</strong> {SITE.description.replace(/^H Heuristics\s*/, '')}</p>
+      <dl class="intro__stats">
+        <div><dt>Explainers</dt><dd>{articles.length}</dd></div>
+        <div><dt>Topics</dt><dd>{TOPICS.length}</dd></div>
+        {articles[0] && <div><dt>Latest</dt><dd class="small">{formatDate(articles[0].data.date, 'short')}</dd></div>}
+      </dl>
+    </section>
+
+    {!lead ? (
+      <p class="empty">No articles yet. Add a file to <code>src/content/articles/</code> to publish your first explainer.</p>
+    ) : (
+      <>
+        <section class="top" aria-label="Top stories">
+          <div class="lead">
+            <ArticleCard article={lead} size="lg" />
+            {lead.data.takeaways.length > 0 && (
+              <div class="lead__brief">
+                <p class="lead__brief-h">In brief</p>
+                <ul>{lead.data.takeaways.slice(0, 3).map((t) => <li set:html={t} />)}</ul>
+                <a class="btn" href={lead.url}>Read the explainer →</a>
+              </div>
+            )}
+          </div>
+          {side.length > 0 && (
+            <div class="side">
+              <p class="side__h">Also new</p>
+              {side.map((a) => <ArticleCard article={a} size="sm" showDek={false} />)}
+            </div>
+          )}
+        </section>
+
+        {latest.length > 0 && (
+          <section class="block">
+            <div class="section-head"><h2>Latest explainers</h2><a href="/archive/">Full archive →</a></div>
+            <div class="grid3">{latest.map((a) => <ArticleCard article={a} />)}</div>
+          </section>
+        )}
+
+        <section class="block">
+          <div class="section-head"><h2>By topic</h2><a href="/topics/">All topics →</a></div>
+          <div class="topics">
+            {byTopic.map((t) => (
+              <div class="topic">
+                <h3><a href={`/topics/${t.id}/`}>{t.name}</a> <span>{t.items.length}</span></h3>
+                <p>{t.blurb}</p>
+                <ul>
+                  {t.items.slice(0, 3).map((a) => (
+                    <li><span class="issue">{issueNo(a.number)}</span><a href={a.url}>{a.data.title}</a></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="cta">
+          <div>
+            <p class="kicker">The archive</p>
+            <p class="cta__line">Every explainer we have published, searchable and filterable by topic.</p>
+          </div>
+          <div class="cta__actions">
+            <a class="btn btn--solid" href="/archive/">Browse all {articles.length}</a>
+            <a class="btn" href="/search/">Search</a>
+          </div>
+        </section>
+      </>
+    )}
+  </div>
+</Base>
+
+<style>
+  .intro { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 40px; padding: 28px 0 22px; border-bottom: 1px solid var(--rule); }
+  .intro__line { margin: 0; max-width: 60ch; font-size: 1.0625rem; color: var(--grey); }
+  .intro__line strong { color: var(--navy); }
+  .intro__stats { display: flex; gap: 28px; margin: 0; font-family: var(--sans); }
+  .intro__stats dt { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mgrey); }
+  .intro__stats dd { margin: 2px 0 0; font: 650 1.75rem/1 var(--serif); color: var(--navy); font-variant-numeric: lining-nums; }
+  .intro__stats dd.small { font-size: 1.125rem; line-height: 1.55; }
+
+  .top { display: grid; grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr); gap: 40px; padding: 34px 0 48px; }
+  .lead { display: grid; gap: 24px; }
+  .lead__brief { background: var(--sand); border-top: 3px solid var(--navy); padding: 18px 22px 22px; font-family: var(--sans); }
+  .lead__brief-h, .side__h { margin: 0 0 10px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); }
+  .lead__brief ul { margin: 0 0 18px; padding-left: 1.1em; display: grid; gap: 8px; font-size: 0.9375rem; line-height: 1.5; }
+  .lead__brief li::marker { color: var(--orange); }
+  .side { border-left: 1px solid var(--rule); padding-left: 32px; display: grid; align-content: start; gap: 18px; }
+  .side > :global(article + article) { border-top: 1px solid var(--rule); padding-top: 18px; }
+
+  .block { margin-bottom: 56px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 36px; }
+  .grid3 > :global(article) { border-top: 1px solid var(--rule); padding-top: 14px; }
+
+  .topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 32px 36px; }
+  .topic h3 { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 6px; font: 650 1.25rem/1.2 var(--serif); }
+  .topic h3 a { color: var(--ink); text-decoration: none; }
+  .topic h3 a:hover { color: var(--blue); }
+  .topic h3 span { font: 700 0.75rem var(--sans); color: var(--orange-ink); }
+  .topic > p { margin: 0 0 12px; font-size: 0.9375rem; color: var(--grey); line-height: 1.45; }
+  .topic ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--navy); }
+  .topic li { display: grid; grid-template-columns: 58px 1fr; gap: 6px; padding: 9px 0; border-bottom: 1px solid var(--rule); }
+  .topic li .issue { color: var(--mgrey); padding-top: 3px; }
+  .topic li a { font-size: 0.96875rem; line-height: 1.3; color: var(--ink); text-decoration: none; font-weight: 550; }
+  .topic li a:hover { color: var(--blue); }
+
+  .cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; padding: 28px 32px; background: var(--navy); color: #fff; }
+  .cta .kicker { color: #f2b66e; margin: 0 0 4px; }
+  .cta__line { margin: 0; font-size: 1.25rem; font-weight: 600; }
+  .cta__actions { display: flex; gap: 10px; }
+  .cta .btn { border-color: #fff; color: #fff; }
+  .cta .btn:hover { background: #fff; color: var(--navy); }
+  .cta .btn--solid { background: var(--orange); border-color: var(--orange); color: var(--navy); }
+  .cta .btn--solid:hover { background: #fff; border-color: #fff; }
+  .empty { padding: 60px 0; color: var(--grey); }
+
+  @media (max-width: 960px) {
+    .top { grid-template-columns: 1fr; }
+    .side { border-left: 0; padding-left: 0; border-top: 3px solid var(--navy); padding-top: 12px; }
+    .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .grid3 { grid-template-columns: 1fr; gap: 24px; }
+    .intro__stats { gap: 22px; }
+    .cta { padding: 22px 20px; }
+  }
+</style>
