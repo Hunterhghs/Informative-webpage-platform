@@ -95,7 +95,7 @@ const jsonLd = {
         {data.takeaways.length > 0 && (
           <section class="brief" aria-labelledby="brief-h">
             <h2 id="brief-h">In brief</h2>
-            <ol>{data.takeaways.map((t) => <li set:html={t} />)}</ol>
+            <ol>{data.takeaways.map((t) => <li><span set:html={t} /></li>)}</ol>
           </section>
         )}
 
