@@ -1,0 +1,31 @@
+---
+/**
+ * Two-column term list, sorted alphabetically by default.
+ * <Glossary items={[{ term: 'Buffer', def: 'Spare capacity that absorbs a shock.' }]} />
+ */
+interface Item { term: string; def: string }
+interface Props { items: Item[]; title?: string; sort?: boolean }
+const { items, title, sort = true } = Astro.props;
+const rows = sort ? [...items].sort((a, b) => a.term.localeCompare(b.term)) : items;
+---
+<div class="gl">
+  {title && <p class="gl__title">{title}</p>}
+  <dl>
+    {rows.map((it) => (
+      <div>
+        <dt>{it.term}</dt>
+        <dd set:html={it.def} />
+      </div>
+    ))}
+  </dl>
+</div>
+
+<style>
+  .gl { margin: 2rem 0; font-family: var(--sans); }
+  .gl__title { margin: 0 0 8px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); }
+  dl { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 36px; border-top: 3px solid var(--navy); }
+  dl > div { padding: 12px 0; border-bottom: 1px solid var(--rule); break-inside: avoid; }
+  dt { font-family: var(--serif); font-weight: 650; font-size: 1.0625rem; color: var(--navy); }
+  dd { margin: 3px 0 0; font-size: 0.9375rem; line-height: 1.5; color: var(--grey); }
+  @media (max-width: 700px) { dl { grid-template-columns: 1fr; } }
+</style>

@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
+import KeyStats from '../../components/mdx/KeyStats.astro';
 import { mdxComponents } from '../../components/mdx';
 import { getArticles, formatDate, issueNo, type Article } from '../../lib/articles';
 import { SITE, topicById } from '../../site.config';
@@ -35,6 +36,7 @@ const { article, newer, older, related, fallback } = Astro.props;
 const { data } = article;
 const { Content, headings } = await render(article);
 const topic = topicById(data.topic)!;
+const isGuide = data.format === 'guide';
 const toc = headings.filter((h) => h.depth === 2 && h.slug !== 'footnote-label');
 const more = related.length ? related : fallback;
 const url = new URL(article.url, Astro.site).toString();
@@ -56,14 +58,16 @@ const jsonLd = {
 <Base title={data.title} description={data.dek} type="article" publishedTime={data.date} modifiedTime={data.updated} jsonLd={jsonLd}>
   <div class="progress" aria-hidden="true"><span id="progress"></span></div>
 
-  <article class="article" data-pagefind-body>
+  <article class:list={['article', { 'article--guide': isGuide }]} data-pagefind-body>
     <header class="container article__head">
       <div class="col">
         <p class="article__flytitle" data-pagefind-ignore>
           <a class="kicker" href={`/topics/${topic.id}/`} data-pagefind-filter="topic">{topic.name}</a>
+          {isGuide && <><span class="flysep" aria-hidden="true">|</span><span class="kicker kicker--plain">Guide</span></>}
           {data.kicker && <><span class="flysep" aria-hidden="true">|</span><span class="kicker kicker--plain">{data.kicker}</span></>}
           <span class="issue" data-pagefind-ignore>{issueNo(article.number)}</span>
         </p>
+        <span class="visually-hidden" data-pagefind-filter="format">{isGuide ? 'Guide' : 'Article'}</span>
         <h1 class="headline article__title" data-pagefind-meta="title">{data.title}</h1>
         <p class="dek article__dek">{data.dek}</p>
         <p class="meta article__byline" data-pagefind-ignore>
@@ -71,18 +75,24 @@ const jsonLd = {
           <span class="sep">|</span>
           <time datetime={data.date.toISOString()} data-pagefind-meta="date">{formatDate(data.date)}</time>
           <span class="sep">|</span>
-          <span>{article.readingMinutes} min read</span>
+          <span>{isGuide ? 'Quick reference' : `${article.readingMinutes} min read`}</span>
           {data.updated && <><span class="sep">|</span><span>Updated {formatDate(data.updated, 'short')}</span></>}
           <button class="share" type="button" data-url={url} aria-label="Copy link to this article">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1 1"/><path d="M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1-1"/></svg>
             <span>Copy link</span>
           </button>
         </p>
+        {isGuide && toc.length > 1 && (
+          <nav class="jump" aria-label="Jump to section" data-pagefind-ignore>
+            <span class="jump__label">Jump to</span>
+            <ul>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul>
+          </nav>
+        )}
       </div>
     </header>
 
     <div class="container article__grid">
-      {toc.length > 2 && (
+      {!isGuide && toc.length > 2 && (
         <nav class="toc" aria-label="Contents" data-pagefind-ignore>
           <div class="toc__inner">
             <p class="toc__label">Contents</p>
@@ -92,6 +102,7 @@ const jsonLd = {
       )}
 
       <div class="col">
+        {data.stats.length > 0 && <KeyStats items={data.stats} />}
         {data.takeaways.length > 0 && (
           <section class="brief" aria-labelledby="brief-h">
             <h2 id="brief-h">In brief</h2>
@@ -99,7 +110,7 @@ const jsonLd = {
           </section>
         )}
 
-        <div class="prose">
+        <div class:list={['prose', { 'prose--guide': isGuide }]}>
           <Content components={mdxComponents} />
         </div>
 
@@ -200,6 +211,7 @@ const jsonLd = {
   .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; pointer-events: none; }
   .progress span { display: block; height: 100%; background: var(--orange); transform-origin: 0 50%; transform: scaleX(0); }
 
+  .article--guide { --measure: 880px; }
   .col { max-width: var(--measure); margin: 0 auto; width: 100%; }
   .article__head { padding-top: 44px; padding-bottom: 28px; }
   .article__flytitle { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0 0 14px; }
@@ -217,6 +229,11 @@ const jsonLd = {
   }
   .share:hover { border-color: var(--navy); }
 
+  .jump { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; margin-top: 18px; padding: 12px 0; border-top: 1px solid var(--rule); border-bottom: 3px solid var(--navy); font-family: var(--sans); }
+  .jump__label { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange-ink); }
+  .jump ul { display: flex; flex-wrap: wrap; gap: 6px 4px; list-style: none; margin: 0; padding: 0; }
+  .jump a { display: block; font-size: 0.8125rem; font-weight: 600; color: var(--navy); text-decoration: none; padding: 4px 10px; border: 1px solid var(--rule); }
+  .jump a:hover { border-color: var(--navy); background: var(--sand); }
   .article__grid { position: relative; }
   .toc { display: none; }
   @media (min-width: 1180px) {

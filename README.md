@@ -55,6 +55,36 @@ sources:                                # optional numbered source list
 
 **Issue numbers** (`No. 001`, `No. 002`…) are assigned automatically in date order.
 Giving a new article an earlier date than existing ones will renumber the later pieces.
+When publishing twice on the same day, give the later one a time (`date: 2026-11-05T18:00:00Z`)
+so it sorts after the first instead of tying on file name.
+
+### Two page formats: articles and guides
+
+Every page is either an **article** (long-form, narrative; the default) or a **guide**
+(a scannable reference page). Set it in the frontmatter:
+
+```yaml
+format: guide          # omit for a normal article
+stats:                 # optional "at a glance" number strip (up to 4)
+  - value: "1999"
+    label: "Year the term was coined"
+```
+
+Guides use a wider layout, a "Jump to" bar built from your `##` headings, no drop cap, and show
+"Quick reference" instead of a reading time. They share numbering, the archive, topics, search
+and RSS with articles, and are tagged "Guide" in lists. Search has a Format filter.
+The draft `src/content/articles/polycrisis-field-guide.mdx` shows the format in use.
+
+Guide-friendly components (all take plain data, no imports):
+
+| Component | Use |
+| --- | --- |
+| `<Cards cols={3} tone="tint" items={[{label, title, text}]} />` | Grid of short cards: options, mechanisms, steps |
+| `<Timeline items={[{when, title, text}]} />` | Vertical timeline |
+| `<FAQ items={[{q, a}]} />` | Expandable questions and answers |
+| `<Glossary items={[{term, def}]} />` | Alphabetical two-column term list |
+
+Text fields in these accept basic HTML (`<strong>`, `<em>`, `<a href>`).
 
 ### Components available in any `.mdx` article
 

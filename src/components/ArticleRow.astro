@@ -7,11 +7,13 @@ interface Props { article: Article; showTopic?: boolean }
 const { article, showTopic = true } = Astro.props;
 const { data } = article;
 const topic = topicById(data.topic);
-const haystack = [data.title, data.dek, data.kicker, topic?.name, ...data.tags].join(' ').toLowerCase();
+const isGuide = data.format === 'guide';
+const haystack = [data.title, data.dek, data.kicker, topic?.name, isGuide ? 'guide' : 'article', ...data.tags].join(' ').toLowerCase();
 ---
 <li class="row" data-topic={data.topic} data-search={haystack}>
   <div class="row__meta">
     <span class="issue">{issueNo(article.number)}</span>
+    {isGuide && <span class="fmt">Guide</span>}
     <time class="meta" datetime={data.date.toISOString()}>{formatDate(data.date, 'short')}</time>
   </div>
   <div class="row__main">
@@ -19,12 +21,13 @@ const haystack = [data.title, data.dek, data.kicker, topic?.name, ...data.tags].
     <h3 class="headline row__title"><a href={article.url}>{data.title}</a></h3>
     <p class="dek row__dek">{data.dek}</p>
   </div>
-  <span class="meta row__time">{article.readingMinutes} min</span>
+  <span class="meta row__time">{isGuide ? 'Guide' : `${article.readingMinutes} min`}</span>
 </li>
 
 <style>
   .row { display: grid; grid-template-columns: 120px minmax(0, 1fr) 60px; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--rule); }
   .row__meta { display: grid; gap: 4px; align-content: start; padding-top: 2px; }
+  .fmt { justify-self: start; font: 700 0.625rem var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange-ink); border: 1px solid var(--orange); padding: 1px 6px; }
   .row__main { display: grid; gap: 5px; }
   .row__title { font-size: 1.25rem; line-height: 1.2; }
   .row__dek { font-size: 0.96875rem; }

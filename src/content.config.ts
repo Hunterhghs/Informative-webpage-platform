@@ -14,11 +14,22 @@ const articles = defineCollection({
     dek: z.string(),
     /** Short label above the headline, e.g. "Cooling access". Defaults to the topic name. */
     kicker: z.string().optional(),
+    /**
+     * "article" = long-form explainer (default).
+     * "guide"   = scannable reference page: wider layout, jump-to bar, key-number strip,
+     *             and cards / timeline / FAQ / glossary components.
+     */
+    format: z.enum(['article', 'guide']).default('article'),
     topic: z.enum(topicIds),
     tags: z.array(z.string()).default([]),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     author: z.string().default('Hunter Hughes'),
+    /** Optional "at a glance" number strip under the headline (up to 4). */
+    stats: z
+      .array(z.object({ value: z.string(), label: z.string(), note: z.string().optional() }))
+      .max(4)
+      .default([]),
     /** Bullet points for the "In brief" box at the top of the article. */
     takeaways: z.array(z.string()).default([]),
     sources: z

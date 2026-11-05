@@ -17,13 +17,13 @@ const label = data.kicker || topic?.name;
 <article class:list={['card', `card--${size}`]}>
   <div class="card__top">
     {showTopic && label && <a class="kicker" href={`/topics/${data.topic}/`}>{label}</a>}
-    <span class="issue">{issueNo(article.number)}</span>
+    <span class="issue">{issueNo(article.number)}{data.format === 'guide' && <span class="fmt"> · Guide</span>}</span>
   </div>
   <h3 class="headline card__title"><a href={article.url}>{data.title}</a></h3>
   {showDek && <p class="dek card__dek">{data.dek}</p>}
   <p class="meta">
     <time datetime={data.date.toISOString()}>{formatDate(data.date, 'short')}</time>
-    <span class="sep">|</span>{article.readingMinutes} min read
+    <span class="sep">|</span>{data.format === 'guide' ? 'Quick reference' : `${article.readingMinutes} min read`}
     {data.draft && <><span class="sep">|</span><strong style="color:var(--red)">Draft</strong></>}
   </p>
 </article>
@@ -38,4 +38,5 @@ const label = data.kicker || topic?.name;
   .card--lg .card__title { font-size: clamp(1.75rem, 3.6vw, 2.625rem); line-height: 1.06; }
   .card--lg .card__dek { font-size: 1.25rem; }
   .meta { margin: 2px 0 0; }
+  .fmt { color: var(--orange-ink); }
 </style>
